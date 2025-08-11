@@ -30,18 +30,20 @@ foreach ($denuncias as $id => $datos) {
 }
 
 /*Pruebas - Emily Valarezo
-$filtro = filtrarDenuncias($denunciasArray, "Contaminación");
+$filtro = filtrarDenuncias($denuncias_lista, "Contaminación");
 echo "Filtradas por tipo Contaminación:\n";
 print_r($filtro);
+*/
 
-
-if (cambiarEstado($denunciasArray, 0, "Pendiente")) {
+/*
+if (cambiarEstado($denuncias_lista, 1, "En proceso")) {
     echo "\nEstado cambiado.\n";
 
     $database->getReference('denuncias')
-            ->set($denunciasArray);
+            ->set($denuncias_lista);
 
     echo "Cambios guardados.\n";
 } else {
     echo "\nNo se encontró la denuncia.\n";
-}*/
+}
+*/
