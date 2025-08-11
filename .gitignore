@@ -1,0 +1,19 @@
+# Ignorar dependencias de PHP
+/vendor/
+
+# Carpeta con secretos
+/secrets/
+
+# Archivos temporales o de caché
+*.log
+*.cache
+*.tmp
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Configuración de IDE/Editor
+.vscode/
+.idea/
+*.code-workspace
