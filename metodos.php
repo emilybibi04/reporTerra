@@ -27,6 +27,9 @@ class Denuncia {
         }
         return false;
     }
+    public function getId() {
+        return $this->id;
+    }
     public function getImagen() {
         return $this->imagen;
     }
@@ -51,7 +54,7 @@ function filtrarDenuncias($denuncias, $tipo = null, $fecha = null, $ubicacion = 
 // Escritura - Emily Valarezo
 function cambiarEstado(&$denuncias, $id, $nuevoEstado) {
     foreach ($denuncias as $index => $denuncia) {
-        if ($denuncia->id == $id) {
+        if ($denuncia->getId() == $id) {
             return $denuncias[$index]->setEstado($nuevoEstado);
         }
     }

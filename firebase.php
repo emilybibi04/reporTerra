@@ -41,8 +41,8 @@ echo "Filtradas por tipo Contaminación:\n";
 print_r($filtro);
 */
 
-/*
-if (cambiarEstado($denuncias_lista, 1, "En proceso")) {
+
+if (cambiarEstado($denuncias_lista, 1, "Pendiente")) {
     echo "\nEstado cambiado.\n";
 
     $database->getReference('denuncias')
@@ -51,7 +51,7 @@ if (cambiarEstado($denuncias_lista, 1, "En proceso")) {
     echo "Cambios guardados.\n";
 } else {
     echo "\nNo se encontró la denuncia.\n";
-}*/
+}
 
 
 /*
