@@ -85,3 +85,11 @@ if ($denunciaEncontrada) {
     echo "No se encontró la denuncia con ID 0.\n";
 }
 */
+
+// Pruebas Raul laurido
+/*$detalle = verDetalleDenuncia($denuncias_lista, 1);
+echo $detalle ;
+
+$denunciaEditada = editarDenuncia($denuncias_lista, 1, ["tipo" => "Tala indiscriminada", "ubicacion" => "Cuenca"]);
+echo verDetalleDenuncia($denuncias_lista, 1);
+*/

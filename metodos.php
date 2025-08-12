@@ -88,3 +88,37 @@ function buscarDenunciaPorId($denuncias, $id) {
     }
     return null;
 }
+
+// Lectura - Raul Laurido
+function verDetalleDenuncia($denuncias, $id){
+    $denuncia = buscarDenunciaPorId($denuncias, $id);
+    if ($denuncia){
+        return "Tipo: {$denuncia->tipo}, Fecha: {$denuncia->fecha}, Ubicación: {$denuncia->ubicacion}, Estado: {$denuncia->estado}";
+    }
+    return "Denuncia no encontrada";
+}
+
+// Escritura - Raul Laurido
+function editarDenuncia(&$denuncias, $id, $nuevosDatos) {
+    foreach ($denuncias as $denuncia) {
+        if ($denuncia->getId() == $id) {
+            if (isset($nuevosDatos["tipo"])) {
+                $denuncia->tipo = $nuevosDatos["tipo"];
+            }
+            if (isset($nuevosDatos["fecha"])) {
+                $denuncia->fecha = $nuevosDatos["fecha"];
+            }
+            if (isset($nuevosDatos["ubicacion"])) {
+                $denuncia->ubicacion = $nuevosDatos["ubicacion"];
+            }
+            if (isset($nuevosDatos["imagen"])) {
+                $denuncia->setImagen($nuevosDatos["imagen"]);
+            }
+            if (isset($nuevosDatos["estado"])) {
+                $denuncia->setEstado($nuevosDatos["estado"]);
+            }
+            return true;
+        }
+    }
+    return false;
+}
