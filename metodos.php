@@ -1,27 +1,87 @@
 <?php
+// Escritura - Joshua Zaruma
+class Denuncia {
+    private $id;
+    public $tipo;
+    public $fecha;
+    public $ubicacion;
+    public $imagen;
+    public $estado;
+
+    public function __construct($id, $tipo,$fecha, $ubicacion) {
+        $this->id = $id;
+        $this->tipo = $tipo;
+        $this->imagen = null;
+        $this->fecha = $fecha;
+        $this->ubicacion = $ubicacion;
+        $this->estado = "Pendiente";
+    }
+    public function getEstado() {
+        return $this->estado;
+    }
+    public function setEstado($estadoNuevo) {
+        $permitido = ["Pendiente", "En proceso", "Resuelta"];
+        if (in_array($estadoNuevo, $permitido, true)) {
+            $this->estado = $estadoNuevo;
+            return true;
+        }
+        return false;
+    }
+    public function getImagen() {
+        return $this->imagen;
+    }
+    public function setImagen($imagen) {
+        $this->imagen = $imagen;
+        return true;
+    }
+    public function toString() {
+        return "ID: {$this->id}, Tipo: {$this->tipo}, Fecha: {$this->fecha}, Ubicación: {$this->ubicacion}, Estado: {$this->estado}";
+    }
+}
 
 // Lectura - Emily Valarezo
 function filtrarDenuncias($denuncias, $tipo = null, $fecha = null, $ubicacion = null) {
     return array_filter($denuncias, function($denuncia) use ($tipo, $fecha, $ubicacion) {
-        return (!$tipo || $denuncia["tipo"] === $tipo) &&
-               (!$fecha || $denuncia["fecha"] === $fecha) &&
-               (!$ubicacion || $denuncia["ubicacion"] === $ubicacion);
+        return (!$tipo || $denuncia->tipo === $tipo) &&
+               (!$fecha || $denuncia->fecha === $fecha) &&
+               (!$ubicacion || $denuncia->ubicacion === $ubicacion);
     });
 }
 
 // Escritura - Emily Valarezo
 function cambiarEstado(&$denuncias, $id, $nuevoEstado) {
-    $permitido = ["Pendiente", "En proceso", "Resuelta"];
-
-    if (!in_array($nuevoEstado, $permitido, true)) {
-        return false;
+    foreach ($denuncias as $index => $denuncia) {
+        if ($denuncia->id == $id) {
+            return $denuncias[$index]->setEstado($nuevoEstado);
+        }
     }
+    return false; // Denuncia no encontrada
+}
 
-    foreach ($denuncias as &$denuncia) {
-        if ($denuncia["id"] == $id) {
-            $denuncia["estado"] = $nuevoEstado;
+// Escritura - Joshua Zaruma
+function RegistrarDenuncia($denuncias, $nuevaDenuncia) {
+    $id = count($denuncias);
+    $denuncia = new Denuncia($id, $nuevaDenuncia["tipo"], $nuevaDenuncia["fecha"], $nuevaDenuncia["ubicacion"]);
+    array_push($denuncias, $denuncia);
+    return true; // Denuncia registrada exitosamente
+}
+// Escritura - Joshua Zaruma
+function eliminarDenuncia(&$denuncias, $id) {
+    foreach ($denuncias as $index => $denuncia) {
+        if ($denuncia->id == $id) {
+            array_splice($denuncias, $index, 1);
             return true;
         }
     }
     return false;
+}
+
+// Lectura - Joshua Zaruma
+function buscarDenunciaPorId($denuncias, $id) {
+    foreach ($denuncias as $denuncia) {
+        if ($denuncia->id == $id) {
+            return $denuncia;
+        }
+    }
+    return null;
 }
