@@ -1,9 +1,11 @@
-console.log("🌱 ReporTerra funcionando con Vite!");
+import './style.css';
+
+console.log("ReporTerra funcionando con Vite");
 
 window.reportarIncidente = function () {
-  alert("Formulario de reporte en construcción 🚧");
+  alert("Formulario");
 };
 
 window.verIncidentes = function () {
-  alert("Mostrando lista de incidentes (próximamente) 🌍");
+  alert("Lista");
 };
