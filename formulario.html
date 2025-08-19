@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReporTerra - Formulario</title>
+    <link rel="icon" type="image/png" href="./public/img/logo.png"> 
+    <!-- ---------------- Font ---------------- -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  </head>
+  
+    <body>
+<!-- ---------------- Header ---------------- -->
+        <header class="navbar">
+        <div class="header-logo">
+        <img src="./img/logo.png" width="35px" alt="Logo">
+        <div class="logo">ReporTerra</div>
+        </div>
+        <nav>
+            <a style="color:#636363; font-size: 20px; margin-right: 25px;">Contáctanos</a>
+        </nav>
+        </header>
+    
+        <div class="form-hero-section">
+            <h1>Información del Incidente</h1>
+        </div>
+
+        <main class="form-main-content">
+            
+            <form class="incidente-form">
+                <section class="incidente-form-group">
+                    <h2>Tipo del incidente</h2>
+                    <div class="incidente-type-buttons">
+                        <button type="button">Contaminación del Agua</button>
+                        <button type="button">Manejo de Residuos</button>
+                        <button type="button">Otro</button>
+                        <button type="button">Incendios Forestales</button>
+                        <button type="button">Deforestación y Tala Ilegal</button>
+                    </div>
+                </section>
+
+                <section class="incidente-form-group">
+                    <h2>Ubicación</h2>
+                    <input type="text" placeholder="Dirección del incidente">
+                </section>
+
+                <section class="incidente-form-group">
+                    <h2>Detalles</h2>
+                    <textarea placeholder="Describe el incidente: qué observaste, cuándo ocurrió, impacto, involucrados..." rows="4"></textarea>
+                </section>
+
+                <section class="incidente-form-group">
+                    <h2>Subir Evidencia (Opcional)</h2>
+                    <div class="incidente-upload-area">
+                        <img src="https://img.icons8.com/ios/50/000000/upload-to-cloud--v1.png" alt="Upload Icon" class="upload-icon"/>
+                        <p>Subir fotos PNG, JPG hasta 10MB</p>
+                    </div>
+                </section>
+
+                <button type="submit" class="incidente-submit-button">Reportar</button>
+            </form>
+
+            <aside class="info-sidebar">
+                <div class="sidebar-info-box">
+                    <h3>¿Qué pasa después?</h3>
+                    <ul>
+                        <li>
+                            <span class="sidebar-step-number">1</span>
+                            <div>
+                                <strong>Recepción</strong>
+                                <p>Tu reporte es recibido y registrado inmediatamente</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="sidebar-step-number">2</span>
+                            <div>
+                                <strong>Evaluación</strong>
+                                <p>Expertos evalúan la gravedad y urgencia</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="sidebar-step-number">3</span>
+                            <div>
+                                <strong>Acción</strong>
+                                <p>Se coordina con autoridades competentes</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-info-box sidebar-emergency-contact">
+                    <h3>Contacto de Emergencia</h3>
+                    <p>Para emergencias ambientales graves que requieren atención inmediata:</p>
+                    <div class="sidebar-emergency-line">Línea de Emergencia 24/7</div>
+                    <div class="sidebar-emergency-phone">1-800-ECO-HELP</div>
+                </div>
+            </aside>
+            <script type="module" src="/src/main.js"></script>
+        </main>
+    </body>
+</html>
