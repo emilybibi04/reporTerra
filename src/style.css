@@ -290,5 +290,176 @@ footer nav a {
 }
 
 footer nav a:hover {
-  text-decoration: underline; /* efecto hover */
+  text-decoration: underline;
 }
+
+/* ----------------------- CSS DE FORMULARIO ----------------------- */
+
+.form-hero-section {
+    background: linear-gradient(rgba(201, 247, 255, 0.35), rgba(201, 247, 255, 0.35)), url('./back_basura.png') no-repeat center center;
+    background-size: cover;
+    background-position: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: white;
+}
+
+.form-hero-section h1 {
+    margin: 0;
+    font-size: 2.8em;
+    text-shadow: 0px 0px 12px rgba(0, 0, 0, 0.3);
+}
+
+.form-main-content {
+    display: flex;
+    padding: 40px 5%;
+    gap: 40px;
+    text-align: left;
+}
+
+.incidente-form {
+    flex: 2;
+}
+
+.info-sidebar {
+    flex: 1;
+}
+
+.incidente-form-group {
+    margin-bottom: 25px;
+}
+
+.incidente-form-group h2 {
+    font-size: 1.2em;
+    color: #1E1E1E;
+    margin-bottom: 15px;
+}
+
+.incidente-type-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.incidente-type-buttons button {
+    background-color: #5B9430;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-family: "Inter", sans-serif;
+    transition: background-color 0.3s;
+}
+
+.incidente-type-buttons button:hover {
+    background-color: #4a7b25;
+}
+
+.incidente-form input[type="text"],
+.incidente-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+    font-family: "Inter", sans-serif;
+    box-sizing: border-box; 
+}
+
+.incidente-form textarea {
+    resize: vertical;
+}
+
+.incidente-upload-area {
+    border: 2px dashed #ccc;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.upload-icon {
+    width: 40px;
+    opacity: 0.6;
+}
+
+.incidente-submit-button {
+    background: #5B9430;
+    color: white;
+    width: 100%;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 550;
+    font-family: "Inter", sans-serif;
+}
+
+.incidente-submit-button:hover {
+    background-color: #4a7b25;
+}
+
+.sidebar-info-box {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.sidebar-info-box h3 {
+    margin-top: 0;
+    font-size: 1.2em;
+    color: #1E1E1E;
+}
+
+.sidebar-info-box ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-info-box li {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.sidebar-step-number {
+    background-color: #5B9430;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.sidebar-info-box li p {
+    margin: 0;
+    color: #666;
+}
+
+.sidebar-emergency-contact {
+    text-align: center;
+}
+
+.sidebar-emergency-line {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.sidebar-emergency-phone {
+    color: #5B9430;
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-top: 5px;
+}
+
