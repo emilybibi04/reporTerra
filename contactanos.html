@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReporTerra</title>
+
+    <!-- ---------------- Font ---------------- -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  </head>
+  <body>
+
+    <!-- ---------------- Header ---------------- -->
+    <header class="navbar">
+      <div class="header-logo">
+      <img src="./img/logo.png" width="35px" alt="Logo">
+      <div class="logo" onclick="redirigir()" style="cursor: pointer;">ReporTerra</div>
+    </div>
+      <nav>
+        <button class="btn-reportar" onclick="reportarIncidente()">Reportar Incidente</button>
+      </nav>
+    </header>
+
+    <!-- ---------------- Inicio ---------------- -->
+    <section class="contacto">
+      <h1 style="font-size: 100px;  margin-top: -20px; margin-bottom: 25px;">Contáctanos</h1>
+    </section>
+
+    <!-- ---------------- Contacto ---------------- -->
+    <section class="incidentes">
+      <h2 style="font-size: 60px; color: #5B9430; text-shadow: 0px 0px 12px rgba(0, 0, 0, 0.15);">Medios de contacto</h2>
+
+      <div class="grid">
+        <div class="item">
+          <img src="./img/user.png" width="130px">
+          <div class="titulo-carta">Joshua <br> Zaruma</div>
+          <p>Correo: jazaruma@espol.edu.ec <br> Celular: 0123456789</p>
+        </div>
+
+        <div class="item">
+          <img src="./img/user.png" width="130px">
+          <div class="titulo-carta">Emily<br> Valarezo</div>
+          <p>Correo: emvaplaza@espol.edu.ec <br> Celular: 9876543210</p>
+        </div>
+
+        <div class="item">
+          <img src="./img/user.png" width="130px">
+          <div class="titulo-carta">Raúl <br> Laurido</div>
+          <p>Correo: rlaurido@espol.edu.ec <br> Celular: 0123498765</p>
+        </div>
+        
+      </div>
+    </section>
+
+    <!-- ---------------- Final ---------------- -->
+    <footer>
+      <div class="footer-logo">
+        <img src="./img/logo_footer.png" alt="Logo" width="1000px">
+        <span>ReporTerra</span>
+      </div>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+
+
+  </body>
+</html>

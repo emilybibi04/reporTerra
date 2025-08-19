@@ -7,5 +7,9 @@ window.reportarIncidente = function () {
 };
 
 window.verIncidentes = function () {
-  alert("Lista");
+  window.location.href = 'tablaincidentes';
+};
+
+window.redirigir = function () {
+  window.location.href = 'index';
 };
