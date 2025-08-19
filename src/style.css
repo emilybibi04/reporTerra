@@ -67,6 +67,90 @@ body {
   text-align: center;
   text-shadow: 0px 0px 12px rgba(0, 0, 0, 0.3);
 }
+.reportados {
+  width: 100%;
+  height: 350px;
+  background: linear-gradient(rgba(201, 247, 255, 0.35), rgba(201, 247, 255, 0.35)), url('./back_inicio.jpg') no-repeat center center;
+  background-size: cover;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  text-shadow: 0px 0px 12px rgba(0, 0, 0, 0.3);
+}
+.tabla {
+  width: 90%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  background: #fff;
+  }
+
+.tabla th {
+  background: #85af65;
+  color: #fff;
+  padding: 14px 10px;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.tabla td {
+  background: #fff;
+  color: #1E1E1E;
+  padding: 12px 10px;
+  font-size: 17px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tabla .btn-ver-mas {
+  background: #5B9430;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 550;
+  font-family: "Inter", sans-serif;
+  transition: background 0.2s;
+}
+
+.tabla .btn-ver-mas:hover {
+  background: #417021;
+}
+.filtro {
+  background: #5B9430;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 550;
+  font-family: "Inter", sans-serif;
+  transition: background-color 0.2s;
+  /* quita la flecha por defecto */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  /* espacio para la flecha personalizada */
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+}
+.filtro:hover {
+  background: #417021;
+}
+.filtro option {
+  color: #5B9430;
+  background: #fff;
+}
 
 .inicio h1 span {
   color: #93F5DB;

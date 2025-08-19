@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReporTerra</title>
+
+    <!-- ---------------- Font ---------------- -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <!-- ---------------- Header ---------------- -->
+    <header class="navbar">
+      <div class="header-logo">
+      <img src="./img/logo.png" width="35px" alt="Logo">
+      <div class="logo">ReporTerra</div>
+    </div>
+      <nav>
+        <a style="color:#636363; font-size: 20px; margin-right: 25px;">Contáctanos</a>
+        <button class="btn-reportar" onclick="reportarIncidente()">Reportar Incidente</button>
+      </nav>
+    </header>
+    <!-- ---------------- Inicio ---------------- -->
+    <section class="reportados">
+      <h1 style="font-size: 100px;  margin-top: -20px; margin-bottom: 25px;">Incidentes Reportados</h1>
+    </section>
+
+    <!-- ---------------- Tipos de Incidentes ---------------- -->
+    <section class="incidentes">
+        <div style="display: flex; gap: 30px; margin-bottom: 40px;">
+            <div>
+                <label for="filtro-tipo" style="font-size: 22px; color: #5B9430; font-weight: bold;">Filtrar por tipo:</label>
+                <select class= "filtro" id="filtro-tipo" name="filtro-tipo" style="font-size: 20px; margin-left: 10px;">
+                    <option value="">Todos</option>
+                    <option value="incendio">Incendio</option>
+                    <option value="inundacion">Inundación</option>
+                    <option value="deslizamiento">Deslizamiento</option>
+                </select>
+            </div>
+            <div>
+                <label for="filtro-fecha" style="font-size: 22px; color: #5B9430; font-weight: bold;">Filtrar por fecha:</label>
+                <select class= "filtro" id="filtro-fecha" name="filtro-fecha" style="font-size: 20px; margin-left: 10px;">
+                    <option value="">Todas</option>
+                    <option value="hoy">Hoy</option>
+                    <option value="semana">Esta semana</option>
+                    <option value="mes">Este mes</option>
+                </select>
+            </div>
+            <div>
+                <label for="filtro-ubicacion" style="font-size: 22px; color: #5B9430; font-weight: bold;">Filtrar por ubicación:</label>
+                <select class= "filtro" id="filtro-ubicacion" name="filtro-ubicacion" style="font-size: 20px; margin-left: 10px;">
+                    <option value="">Todas</option>
+                    <option value="norte">Costa</option>
+                    <option value="sur">Sierra</option>
+                    <option value="este">Oriente</option>
+                </select>
+            </div>
+        </div>
+    </section>
+    <!-- ---------------- Tabla de Incidentes ---------------- -->
+    <section class="tabla-incidentes">
+      <table class="tabla">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Fecha</th>
+            <th>Ubicación</th>
+            <th>Descripción</th>
+            </tr>
+        </thead>
+        <tbody id="incidentes-lista">
+            <tr>
+                <td>Incendio en la playa</td>
+                <td>Incendio</td>
+                <td>2023-10-01</td>
+                <td>Manabí, Ecuador</td>
+                <td><button type="submit" class="btn-ver-mas">Ver más</button></td>
+            </tr>
+        </tbody>
+      </table>
+    </section>
+    <br>
+    </body>
+            <!-- ---------------- Final ---------------- -->
+        <footer>
+        <div class="footer-logo">
+            <img src="./img/logo_footer.png" alt="Logo" width="1000px">
+            <span>ReporTerra</span>
+        </div>
+
+        <nav>
+            <a href="#">Contáctanos</a>
+        </nav>
+        </footer>
+        <script type="module" src="/src/main.js"></script>
+</html>
