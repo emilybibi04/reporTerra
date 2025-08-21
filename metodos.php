@@ -52,31 +52,48 @@ function filtrarDenuncias($denuncias, $tipo = null, $fecha = null, $ubicacion = 
 }
 
 // Escritura - Emily Valarezo
-function cambiarEstado(&$denuncias, $id, $nuevoEstado) {
-    foreach ($denuncias as $index => $denuncia) {
-        if ($denuncia->getId() == $id) {
-            return $denuncias[$index]->setEstado($nuevoEstado);
-        }
+function cambiarEstado( $id, $nuevoEstado) {
+    global $database;
+    $permitidos=["Pendiente", "En proceso", "Resuelta"];
+    if (!in_array($nuevoEstado, $permitidos)) {
+        return false;
+    }
+
+    $referenciaDenuncia= $database->getReference('denuncias/' . $id);
+    $snapshot= $referenciaDenuncia->getSnapshot();
+
+    if ($snapshot->exists()){
+        $referenciaDenuncia->update([
+            'estado' => $nuevoEstado
+        ]);
+        return true;
     }
     return false; // Denuncia no encontrada
 }
 
 // Escritura - Joshua Zaruma
-function RegistrarDenuncia($denuncias, $nuevaDenuncia) {
-    $id = count($denuncias);
-    $denuncia = new Denuncia($id, $nuevaDenuncia["tipo"], $nuevaDenuncia["fecha"], $nuevaDenuncia["ubicacion"]);
-    array_push($denuncias, $denuncia);
-    return true; // Denuncia registrada exitosamente
-}
-// Escritura - Joshua Zaruma
-function eliminarDenuncia(&$denuncias, $id) {
-    foreach ($denuncias as $index => $denuncia) {
-        if ($denuncia->id == $id) {
-            array_splice($denuncias, $index, 1);
-            return true;
-        }
+function RegistrarDenuncia($denunciaData) {
+    global $database;
+    $reference = $database->getReference('denuncias');
+    $newDenuncia = $reference->push([
+        'tipo' => $denunciaData["tipo"],
+        'fecha' => $denunciaData["fecha"],
+        'ubicacion' => $denunciaData["ubicacion"],
+        'imagen'=> null, 
+        'estado'=> "Pendiente"
+    ]);
+
+    if ($newDenuncia) {
+        return true; // Denuncia registrada exitosamente en Firebase
     }
     return false;
+}
+// Escritura - Joshua Zaruma
+function eliminarDenuncia( $id) {
+    global $database;
+    $referenciaDenuncia = $database->getReference('denuncias/' . $id);
+    $referenciaDenuncia->remove();
+    return true;
 }
 
 // Lectura - Joshua Zaruma
@@ -99,26 +116,30 @@ function verDetalleDenuncia($denuncias, $id){
 }
 
 // Escritura - Raul Laurido
-function editarDenuncia(&$denuncias, $id, $nuevosDatos) {
-    foreach ($denuncias as $denuncia) {
-        if ($denuncia->getId() == $id) {
-            if (isset($nuevosDatos["tipo"])) {
-                $denuncia->tipo = $nuevosDatos["tipo"];
+function editarDenuncia($id, $nuevosDatos) {
+    global $database;
+    $referenciaDenuncia = $database->getReference("denuncias/". $id);
+    $snapshot=$referenciaDenuncia->getSnapshot();
+        if (!$snapshot->exists()) {
+            return false;
+        }
+    $actualizacion=[];
+    if (isset($nuevosDatos["tipo"])) {
+                $actualizacion["tipo"] = $nuevosDatos["tipo"];
             }
             if (isset($nuevosDatos["fecha"])) {
-                $denuncia->fecha = $nuevosDatos["fecha"];
+                $actualizacion["fecha"] = $nuevosDatos["fecha"];
             }
             if (isset($nuevosDatos["ubicacion"])) {
-                $denuncia->ubicacion = $nuevosDatos["ubicacion"];
+                $actualizacion["ubicacion"] = $nuevosDatos["ubicacion"];
             }
             if (isset($nuevosDatos["imagen"])) {
-                $denuncia->setImagen($nuevosDatos["imagen"]);
+                $actualizacion["imagen"]= $nuevosDatos["imagen"];
             }
             if (isset($nuevosDatos["estado"])) {
-                $denuncia->setEstado($nuevosDatos["estado"]);
+                $actualizacion["estado"]=$nuevosDatos["estado"];
             }
+            $referenciaDenuncia->update($actualizacion);
             return true;
-        }
-    }
-    return false;
+
 }

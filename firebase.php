@@ -41,7 +41,7 @@ echo "Filtradas por tipo Contaminación:\n";
 print_r($filtro);
 */
 
-
+/*
 if (cambiarEstado($denuncias_lista, 1, "Pendiente")) {
     echo "\nEstado cambiado.\n";
 
@@ -52,8 +52,23 @@ if (cambiarEstado($denuncias_lista, 1, "Pendiente")) {
 } else {
     echo "\nNo se encontró la denuncia.\n";
 }
+*/
+$nuevaDenunciaData=[
+    "tipo"=> "Contaminación por basura",
+    "fecha"=> "2025-08-20",
+    "ubicacion"=> "Guayaquil"
+];
+//RegistrarDenuncia($nuevaDenunciaData);
+$nuevoEstado="En proceso";
+//cambiarEstado(0,$nuevoEstado);
+$denunciaEditada=[
+    "tipo"=> "Desechos industriales",
+    "fecha"=> "2025-08-27",
+    "ubicacion"=> "Daule",
+];
+editarDenuncia(0,$denunciaEditada);
 
-
+//RegistrarDenuncia($nuevaDenunciaData);
 /*
 // Pruebas - Joshua Zaruma
 // PRUEBA 1: Registrar nueva denuncia
