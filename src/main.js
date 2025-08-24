@@ -1,65 +1,77 @@
 import './style.css';
-import { db, ref, push, set, get, child } from "./firebase.js";
 
-// Cambio de páginas
 window.reportarIncidente = function () {
   window.location.href = 'formulario.html'; 
 };
 
 window.verIncidentes = function () {
-  window.location.href = 'tablaincidentes';
+  window.location.href = 'tablaincidentes.html';
 };
 
 window.redirigir = function () {
-  window.location.href = 'index';
+  window.location.href = 'index.html';
 };
 
-// Función para guardar en firebase
 window.enviarReporte = async function (reporte) {
   try {
-    const ultimoIdRef = ref(db, "ultimoId");
-    const snapshot = await get(ultimoIdRef);
-    let ultimoId = snapshot.exists() ? snapshot.val() : 0;
-
-    const nuevoId = ultimoId + 1;
-    const denunciaRef = ref(db, `denuncias/${nuevoId}`);
-    await set(denunciaRef, {
-      ...reporte,
-      fecha: new Date().toISOString().split("T")[0],
-      estado: "Pendiente"
+    const resp = await fetch('/api.php?action=registrar', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(reporte)
     });
-
-    await set(ultimoIdRef, nuevoId);
-
-    console.log(`Reporte guardado con ID: ${nuevoId}`);
+    const txt = await resp.text();
+    let data;
+    try { data = JSON.parse(txt); } catch {
+      console.error('Respuesta NO JSON:', txt);
+      throw new Error('Respuesta del servidor no es JSON');
+    }
+    console.log('API registrar ->', data);
+    if (!data.ok) throw new Error(data.error || 'Error desconocido');
+    return data.id;
   } catch (err) {
-    console.error("Error al guardar:", err);
+    console.error('Error al guardar:', err);
+    alert('No se pudo guardar el reporte: ' + err.message);
+    return null;
   }
 };
 
-// Para que la tabla salga con los datos de firebase
-window.cargarIncidentes = function () {
-  const dbRef = ref(db);
-  get(child(dbRef, "denuncias")).then((snapshot) => {
-    if (snapshot.exists()) {
-      const incidentes = snapshot.val();
-      const tbody = document.getElementById("incidentes-lista");
-      tbody.innerHTML = "";
+window.cargarIncidentes = async function () {
+  try {
+    const resp = await fetch('/api.php?action=listar');
+    const data = await resp.json();
+    if (!data.ok) throw new Error(data.error || 'Error listando');
 
-      Object.entries(incidentes).forEach(([id, data]) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${data.estado || 'Pendiente'}</td>
-          <td>${id}</td>
-          <td>${data.tipo}</td>
-          <td>${data.fecha}</td>
-          <td>${data.ubicacion} (${data.region})</td>
-          <td><button class="btn-ver-mas">Ver más</button></td>
-        `;
-        tbody.appendChild(tr);
-      });
-    } else {
-      console.log("No hay incidentes aún");
-    }
-  }).catch((err) => console.error(err));
+    const incidentes = data.denuncias || {};
+    const tbody = document.getElementById('incidentes-lista');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+    Object.entries(incidentes).forEach(([id, d]) => {
+      const tr = document.createElement('tr');
+      const estado = d.estado || 'Pendiente';
+      const tipo = d.tipo || '';
+      const fecha = d.fecha || '';
+      const ubic = d.ubicacion || '';
+      const region = d.region ? ` (${d.region})` : '';
+      const desc = (d.detalles && d.detalles.trim()) ? d.detalles : '—';
+
+      tr.innerHTML = `
+        <td>${estado}</td>
+        <td>${id}</td>
+        <td>${tipo}</td>
+        <td>${fecha}</td>
+        <td>${ubic}${region}</td>
+        <td><button class="btn-ver-mas" data-id="${id}" title="${desc}">Ver más</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    tbody.onclick = (e) => {
+      const btn = e.target.closest('.btn-ver-mas');
+      if (btn) alert(btn.title || 'Sin descripción');
+    };
+
+  } catch (err) {
+    console.error(err);
+  }
 };
