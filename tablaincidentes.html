@@ -61,11 +61,13 @@
             </div>
         </div>
     </section>
+
     <!-- ---------------- Tabla de Incidentes ---------------- -->
     <section class="tabla-incidentes">
       <table class="tabla">
         <thead>
           <tr>
+            <th>Estado</th>
             <th>Nombre</th>
             <th>Tipo</th>
             <th>Fecha</th>
@@ -86,7 +88,8 @@
     </section>
     <br>
     </body>
-            <!-- ---------------- Final ---------------- -->
+
+        <!-- ---------------- Final ---------------- -->
         <footer>
         <div class="footer-logo">
             <img src="./img/logo_footer.png" alt="Logo" width="1000px">
@@ -99,3 +102,10 @@
         </footer>
         <script type="module" src="/src/main.js"></script>
 </html>
+
+<!-- ---------------- Script ---------------- -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    cargarIncidentes();
+  });
+</script>

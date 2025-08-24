@@ -29,7 +29,7 @@
 
         <main class="form-main-content">
             
-            <form class="incidente-form">
+            <form class="incidente-form" onsubmit="return manejarFormulario(event)">
                 <section class="incidente-form-group">
                     <h2>Tipo del incidente</h2>
                     <div class="incidente-type-buttons">
@@ -112,8 +112,33 @@
                                 ¡Reporte enviado con éxito!
                             </div>
                         </div>
+
+                        <!-- ---------------- Script ---------------- -->
                         <script>
-                        // Selección única y cambio de color
+                        
+                        function manejarFormulario(e) {
+                            e.preventDefault();
+                            const tipo = document.querySelector(".incidente-type-btn.selected")?.innerText || "Otro";
+                            const region = document.querySelector(".region-select").value;
+                            const ubicacion = document.querySelector(".ubicacion-row input").value;
+                            const detalles = document.querySelector("textarea").value;
+
+                            if (!ubicacion || !region) {
+                                alert("Debes completar ubicación y región");
+                                return false;
+                            }
+
+                            enviarReporte({ tipo, region, ubicacion, detalles });
+                            const modal = document.getElementById('modal-exito');
+                            modal.style.display = 'flex';
+                            setTimeout(() => {
+                                modal.style.display = 'none';
+                                window.location.href = 'index.html';
+                            }, 1700);
+
+                            return false;
+                            }
+
                         document.addEventListener('DOMContentLoaded', function() {
                                 const buttons = document.querySelectorAll('.incidente-type-btn');
                                 buttons.forEach(btn => {
@@ -123,7 +148,6 @@
                                         });
                                 });
 
-                                // Redirigir al hacer click en logo o texto
                                 document.getElementById('logo-img').onclick = function() {
                                     window.location.href = 'index.html';
                                 };
@@ -131,7 +155,6 @@
                                     window.location.href = 'index.html';
                                 };
 
-                                // Notificación y redirección al reportar
                                 document.querySelector('.incidente-form').addEventListener('submit', function(e) {
                                     e.preventDefault();
                                     const modal = document.getElementById('modal-exito');
