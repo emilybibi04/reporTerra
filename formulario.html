@@ -15,8 +15,8 @@
 <!-- ---------------- Header ---------------- -->
         <header class="navbar">
         <div class="header-logo">
-        <img src="./img/logo.png" width="35px" alt="Logo">
-        <div class="logo">ReporTerra</div>
+    <img src="./img/logo.png" width="35px" alt="Logo" id="logo-img" style="cursor:pointer;">
+    <div class="logo" id="logo-text" style="cursor:pointer;">ReporTerra</div>
         </div>
         <nav>
             <a style="color:#636363; font-size: 20px; margin-right: 25px;">Contáctanos</a>
@@ -33,17 +33,25 @@
                 <section class="incidente-form-group">
                     <h2>Tipo del incidente</h2>
                     <div class="incidente-type-buttons">
-                        <button type="button">Contaminación del Agua</button>
-                        <button type="button">Manejo de Residuos</button>
-                        <button type="button">Otro</button>
-                        <button type="button">Incendios Forestales</button>
-                        <button type="button">Deforestación y Tala Ilegal</button>
+                        <button type="button" class="incidente-type-btn">Contaminación del Agua</button>
+                        <button type="button" class="incidente-type-btn">Manejo de Residuos</button>
+                        <button type="button" class="incidente-type-btn">Incendios Forestales</button>
+                        <button type="button" class="incidente-type-btn">Deforestación y Tala Ilegal</button>
+                        <button type="button" class="incidente-type-btn">Otro</button>
                     </div>
                 </section>
 
                 <section class="incidente-form-group">
                     <h2>Ubicación</h2>
-                    <input type="text" placeholder="Dirección del incidente">
+                    <div class="ubicacion-row">
+                        <select class="region-select">
+                            <option value="" disabled selected>Región</option>
+                            <option value="Costa">Costa</option>
+                            <option value="Sierra">Sierra</option>
+                            <option value="Oriente">Oriente</option>
+                        </select>
+                        <input type="text" placeholder="Dirección del incidente">
+                    </div>
                 </section>
 
                 <section class="incidente-form-group">
@@ -59,7 +67,7 @@
                     </div>
                 </section>
 
-                <button type="submit" class="incidente-submit-button">Reportar</button>
+                <button type="submit" class="incidente-submit-button" id="btn-reportar">Reportar</button>
             </form>
 
             <aside class="info-sidebar">
@@ -97,7 +105,44 @@
                     <div class="sidebar-emergency-phone">1-800-ECO-HELP</div>
                 </div>
             </aside>
-            <script type="module" src="/src/main.js"></script>
+                        <script type="module" src="/src/main.js"></script>
+                        <div id="modal-exito" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);z-index:9999;align-items:center;justify-content:center;">
+                            <div style="background:#fff;padding:30px 40px;border-radius:16px;box-shadow:0 2px 16px #0002;font-size:1.3em;color:#5B9430;display:flex;flex-direction:column;align-items:center;">
+                                <span style="font-size:2em;">✅</span>
+                                ¡Reporte enviado con éxito!
+                            </div>
+                        </div>
+                        <script>
+                        // Selección única y cambio de color
+                        document.addEventListener('DOMContentLoaded', function() {
+                                const buttons = document.querySelectorAll('.incidente-type-btn');
+                                buttons.forEach(btn => {
+                                        btn.addEventListener('click', function() {
+                                                buttons.forEach(b => b.classList.remove('selected'));
+                                                this.classList.add('selected');
+                                        });
+                                });
+
+                                // Redirigir al hacer click en logo o texto
+                                document.getElementById('logo-img').onclick = function() {
+                                    window.location.href = 'index.html';
+                                };
+                                document.getElementById('logo-text').onclick = function() {
+                                    window.location.href = 'index.html';
+                                };
+
+                                // Notificación y redirección al reportar
+                                document.querySelector('.incidente-form').addEventListener('submit', function(e) {
+                                    e.preventDefault();
+                                    const modal = document.getElementById('modal-exito');
+                                    modal.style.display = 'flex';
+                                    setTimeout(() => {
+                                        modal.style.display = 'none';
+                                        window.location.href = 'index.html';
+                                    }, 1700);
+                                });
+                        });
+                        </script>
         </main>
     </body>
 </html>
