@@ -148,6 +148,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 // **NUEVA LOGICA** para manejar el modo de edicion
   const urlParams = new URLSearchParams(window.location.search);
   const incidenteId = urlParams.get('id');
+  const form = document.querySelector('.incidente-form');
 
   if (incidenteId) {
   // Modo edicion: cambiar el titulo y el boton
