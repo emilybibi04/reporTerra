@@ -67,6 +67,38 @@ try {
       ok();
     }
 
+    case 'editar': {
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            $noise = trim(ob_get_clean());
+            fail('Falta el ID de la denuncia' . ($noise ? " | $noise" : ""));
+        }
+
+        $raw = file_get_contents('php://input');
+        $body = $raw ? json_decode($raw, true) : null;
+        if (!$body || !is_array($body)) {
+            $noise = trim(ob_get_clean());
+            fail('Datos no válidos o faltantes para la edición' . ($noise ? " | $noise" : ""));
+        }
+
+        $done = $firebase->editarDenuncia($id, $body);
+
+        $noise = trim(ob_get_clean());
+        if (!$done) {
+            fail('No se pudo editar la denuncia' . ($noise ? " | $noise" : ""));
+        }
+        ok();
+    }
+
+    case 'obtener': {
+      $id = $_GET['id'] ?? null;
+      if (!$id) fail('Falta el ID para obtener la denuncia');
+      $denuncia = $firebase->obtenerDenuncia($id);
+      if (!$denuncia) fail("Denuncia no encontrada con ID: $id");
+      ob_end_clean();
+      ok(['denuncia' => $denuncia]);
+    }
+
     default: {
       $noise = trim(ob_get_clean());
       fail('action no soportada' . ($noise ? " | $noise" : ""));
