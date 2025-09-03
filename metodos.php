@@ -7,16 +7,30 @@ class MetodosFirebase {
     private $database;
     private $referencia;
     private $ultimoIdRef;
+    private $storage;
+    private $bucket;
 
     public function __construct() {
-        $factory = (new Factory)
-            ->withServiceAccount(__DIR__ . '/secrets/firebase-key.json')
-            ->withDatabaseUri('https://reporterra-433b5-default-rtdb.firebaseio.com/');
+        $keyPath = __DIR__ . '/secrets/firebase-key.json';
+        $bucketName = 'reporterra-433b5.firebasestorage.app';
 
-        $this->database   = $factory->createDatabase();
-        $this->referencia = $this->database->getReference('denuncias');
+        $factory = (new Factory)
+            ->withServiceAccount($keyPath)
+            ->withDatabaseUri('https://reporterra-433b5-default-rtdb.firebaseio.com/')
+            ->withDefaultStorageBucket($bucketName);
+
+        $this->database    = $factory->createDatabase();
+        $this->referencia  = $this->database->getReference('denuncias');
         $this->ultimoIdRef = $this->database->getReference('ultimoId');
+
+        $this->storage = $factory->createStorage();
+        $this->bucket  = $this->storage->getBucket($bucketName);
+
+        date_default_timezone_set('America/Guayaquil');
     }
+
+
+
 
     public function RegistrarDenuncia($datos) {
         try {
@@ -165,5 +179,37 @@ class MetodosFirebase {
             'estado'    => 'Pendiente',
             'detalles'  => $datos['detalles'] ?? ''
         ];
+    }
+
+    public function subirEvidencia($tmpPath, $originalName, $mimeType = null) {
+        if (!file_exists($tmpPath)) {
+            throw new \RuntimeException('Archivo temporal no existe');
+        }
+
+        $base = preg_replace('/[^a-zA-Z0-9._-]/', '_', $originalName ?: ('evidencia_'.time().'.bin'));
+        $ruta = 'denuncias/'.date('Y/m/').time().'_'.bin2hex(random_bytes(4)).'_'.$base;
+
+        $token = bin2hex(random_bytes(16));
+
+        $options = [
+            'name' => $ruta,
+            'metadata' => [
+                'contentType' => $mimeType ?: 'application/octet-stream',
+                'metadata' => [
+                    'firebaseStorageDownloadTokens' => $token,
+                ],
+            ],
+        ];
+
+        $object = $this->bucket->upload(fopen($tmpPath, 'r'), $options);
+
+        $downloadUrl = sprintf(
+            'https://firebasestorage.googleapis.com/v0/b/%s/o/%s?alt=media&token=%s',
+            $this->bucket->name(),
+            rawurlencode($object->name()),
+            $token
+        );
+
+        return $downloadUrl;
     }
 }

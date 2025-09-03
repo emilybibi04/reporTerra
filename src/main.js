@@ -147,17 +147,44 @@ function aplicarFiltrosYRender(){
     tr.dataset.id = id;
     tr.innerHTML = `
       <td>${estado}</td>
-      <td>${id}</td>
       <td>${tipo}</td>
       <td>${fecha}</td>
       <td>${ubic}${regionTxt}</td>
-      <td><button class="btn-ver-mas" data-id="${id}" title="${desc}">Ver más</button></td>
+      <td>
+        <button class="btn-ver-mas" data-id="${id}" title="${desc}">Ver más</button>
+      </td>
       <td>${botonEstadoHTML(estado, id)}</td>
+      <td><button class="btn-eliminar" data-id="${id}">Eliminar</button></td> <!-- NUEVO -->
     `;
     tbody.appendChild(tr);
+
   });
 
   tbody.onclick = async (e) => {
+
+    const btnEliminar = e.target.closest('.btn-eliminar');
+if (btnEliminar) {
+  const id = btnEliminar.dataset.id;
+  if (confirm(`¿Seguro que quieres eliminar la denuncia #${id}?`)) {
+    try {
+      const resp = await fetch(`/api.php?action=eliminar&id=${encodeURIComponent(id)}`, {
+        method: 'POST'
+      });
+      const data = await resp.json();
+      if (data.ok) {
+        delete _cacheIncidentes[id];
+        aplicarFiltrosYRender();
+        alert('Denuncia eliminada correctamente');
+      } else {
+        alert('Error al eliminar: ' + (data.error || 'Desconocido'));
+      }
+    } catch (err) {
+      alert('Error eliminando: ' + err.message);
+    }
+  }
+  return;
+}
+
     const btnVer = e.target.closest('.btn-ver-mas');
     if (btnVer) {
       const id = btnVer.dataset.id;
@@ -208,19 +235,30 @@ function setFormDisabled(disabled){
 }
 
 function insertarBotonEditarONuevo(label, id){
-  let contDestino = document.querySelector('.form-hero-section') || document.querySelector('.incidente-form') || document.body;
+  const form = document.querySelector('.incidente-form') || document.querySelector('form');
+
+  // contenedor de botones al pie del form
+  let footer = document.getElementById('form-footer-controls');
+  if (!footer) {
+    footer = document.createElement('div');
+    footer.id = 'form-footer-controls';
+    footer.className = 'form-footer';
+    form.appendChild(footer); // lo crea al final del formulario
+  }
+
   let btn = document.getElementById('btn-editar-ver');
   if (!btn) {
     btn = document.createElement('button');
     btn.id = 'btn-editar-ver';
+    btn.type = 'button';
     btn.className = 'btn-reportar';
-    btn.style.marginTop = '12px';
-    contDestino.appendChild(btn);
+    footer.appendChild(btn);
   }
   btn.textContent = label;
   btn.dataset.id = id || '';
   return btn;
 }
+
 
 async function recogerDatosFormulario(){
   const tipo = document.querySelector(".incidente-type-btn.selected")?.innerText || "Otro";
@@ -239,8 +277,16 @@ window.manejarFormulario = async function (e) {
 
   const incidenteId = document.getElementById("incidente-id")?.value || "";
   const datosReporte = await recogerDatosFormulario();
-  let exito = false;
 
+  // si el usuario eligió archivo, súbelo primero
+  const inputFile = document.getElementById('evidencia');
+  const file = inputFile?.files?.[0];
+  if (file) {
+    const url = await subirImagen(file);
+    if (url) datosReporte.imagen = url;
+  }
+
+  let exito = false;
   if (incidenteId) {
     exito = await enviarActualizacion(incidenteId, datosReporte);
   } else {
@@ -263,6 +309,31 @@ window.manejarFormulario = async function (e) {
   return false;
 };
 
+function setupUploadUI(){
+  const inputEvi  = document.getElementById('evidencia');
+  const imgPrev   = document.getElementById('preview-evidencia');
+  const uploadBox = document.querySelector('.incidente-upload-area');
+
+  // Click en la caja -> abrir el input real
+  if (uploadBox && inputEvi) {
+    uploadBox.addEventListener('click', () => inputEvi.click());
+  }
+
+  // Al elegir archivo -> mostrar preview
+  if (inputEvi && imgPrev) {
+    const ocultar = () => { imgPrev.src = ''; imgPrev.style.display = 'none'; };
+    inputEvi.addEventListener('change', () => {
+      const file = inputEvi.files?.[0];
+      if (!file) { ocultar(); return; }
+      const url = URL.createObjectURL(file);
+      imgPrev.src = url;
+      imgPrev.style.display = 'block';
+      imgPrev.onload = () => URL.revokeObjectURL(url);
+    });
+  }
+}
+
+
 function bindFormHandlers(){
   const globalSubmit = (ev) => {
     const form = ev.target;
@@ -274,6 +345,7 @@ function bindFormHandlers(){
       window.manejarFormulario(ev);
     }
   };
+
   document.addEventListener('submit', globalSubmit, true);
 
   const form =
@@ -320,6 +392,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
   bindFormHandlers();
+  setupUploadUI();
 
   const url = new URLSearchParams(window.location.search);
   const incidenteId = url.get('id');
@@ -329,15 +402,34 @@ document.addEventListener('DOMContentLoaded', async function () {
   if (form && incidenteId) {
     const denuncia = await obtenerDenuncia(incidenteId);
     if (denuncia) {
-      const tipoBtn = document.querySelector(`.incidente-type-btn[data-tipo="${denuncia.tipo}"]`);
-      if (tipoBtn) tipoBtn.click();
+      // --- seleccionar tipo por TEXTO ---
+      if (denuncia.tipo) {
+        const botones = document.querySelectorAll('.incidente-type-btn');
+        botones.forEach(b => {
+          const texto = b.textContent.trim().toLowerCase();
+          if (texto === denuncia.tipo.trim().toLowerCase()) {
+            b.classList.add('selected');
+          } else {
+            b.classList.remove('selected');
+          }
+        });
+      }
+
+      // (¡QUITA esto! no tienes data-tipo)
+      // const tipoBtn = document.querySelector(`.incidente-type-btn[data-tipo="${denuncia.tipo}"]`);
+      // if (tipoBtn) tipoBtn.click();
+
+      // Rellenar campos
       const regionSelect = document.querySelector(".region-select");
       if (regionSelect && denuncia.region) regionSelect.value = denuncia.region;
+
       const ubicInput = document.querySelector(".ubicacion-row input");
       if (ubicInput && denuncia.ubicacion) ubicInput.value = denuncia.ubicacion;
+
       const ta = document.querySelector("textarea");
       if (ta && typeof denuncia.detalles === 'string') ta.value = denuncia.detalles;
 
+      // id oculto
       const hiddenId = document.getElementById('incidente-id') || (()=>{
         const h = document.createElement('input');
         h.type='hidden'; h.id='incidente-id'; h.value=incidenteId;
@@ -345,6 +437,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       })();
       hiddenId.value = incidenteId;
 
+      // título / botón principal si NO es "ver"
       if (!modo) {
         const titulo = document.querySelector('.form-hero-section h1');
         if (titulo) titulo.innerText = 'Editar Incidente';
@@ -352,25 +445,88 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (btnReportar) btnReportar.innerText = 'Guardar Cambios';
       }
 
+      // --- PREVIEW de evidencia (si existe) ---
+      const imgPrev = document.getElementById('preview-evidencia');
+      if (imgPrev) {
+        imgPrev.removeAttribute('src');
+        imgPrev.style.display = 'none';
+
+        const oldLink = document.getElementById('img-link-debug');
+        if (oldLink) oldLink.remove();
+
+        if (denuncia.imagen && typeof denuncia.imagen === 'string' && denuncia.imagen.trim() !== '') {
+          imgPrev.onerror = () => {
+            imgPrev.style.display = 'none';
+            const a = document.createElement('a');
+            a.id = 'img-link-debug';
+            a.href = denuncia.imagen;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.textContent = 'Abrir imagen en una nueva pestaña';
+            a.style.display = 'inline-block';
+            a.style.marginTop = '8px';
+            (imgPrev.parentElement || document.body).appendChild(a);
+          };
+          imgPrev.onload = () => {
+            imgPrev.style.display = 'block';
+            imgPrev.style.maxHeight = '260px';
+            imgPrev.style.width = 'auto';
+            const link = document.getElementById('img-link-debug');
+            if (link) link.remove();
+          };
+          imgPrev.src = denuncia.imagen;
+        }
+      }
+
+      // --- Vista "VER MÁS" ---
       if (modo === 'ver') {
         setFormDisabled(true);
+
+        // Oculta SOLO input/caja (no ocultes el <img> preview)
+        const uploadArea = document.querySelector('.incidente-upload-area');
+        if (uploadArea) uploadArea.style.display = 'none';
+        const inputEvi = document.getElementById('evidencia');
+        if (inputEvi) inputEvi.style.display = 'none';
+
+        // Oculta botón principal
+        const btnReportar = document.getElementById('btn-reportar');
+        if (btnReportar) btnReportar.style.display = 'none';
+
+        // Botón "Editar" ABAJO
         const btnVer = insertarBotonEditarONuevo('Editar', incidenteId);
-        btnVer.onclick = async () => {
+        btnVer.onclick = async function editarHandler() {
           const d = await obtenerDenuncia(incidenteId);
           const estado = (d && d.estado) || 'Pendiente';
           if (estado !== 'Pendiente') {
             alert('Esta denuncia no se puede editar porque no está en estado Pendiente.');
             return;
           }
+
           setFormDisabled(false);
+          // Si quieres permitir cambiar evidencia al editar:
+          if (uploadArea) uploadArea.style.display = '';
+          if (inputEvi) inputEvi.style.display = '';
+
           btnVer.textContent = 'Guardar cambios';
-          btnVer.onclick = async () => {
+          btnVer.onclick = async function guardarHandler() {
             const datos = await recogerDatosFormulario();
+
+            // si se cambió la imagen
+            const file = inputEvi?.files?.[0];
+            if (file) {
+              const url = await subirImagen(file);
+              if (url) datos.imagen = url;
+            }
+
             const ok = await enviarActualizacion(incidenteId, datos);
             if (ok) {
               alert('Cambios guardados');
               setFormDisabled(true);
+              if (uploadArea) uploadArea.style.display = 'none';
+              if (inputEvi) inputEvi.style.display = 'none';
+
               btnVer.textContent = 'Editar';
+              btnVer.onclick = editarHandler; // vuelve al handler de editar
             }
           };
         };
@@ -378,6 +534,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
   }
 
+  // --- filtros (si aplica en esta página) ---
   const selTipo  = document.getElementById('filtro-tipo');
   const selFecha = document.getElementById('filtro-fecha');
   const selUbic  = document.getElementById('filtro-ubicacion');
@@ -409,4 +566,99 @@ document.addEventListener('DOMContentLoaded', async function () {
       aplicarFiltrosYRender();
     });
   }
+
+  actualizarContadoresInicio();
 });
+
+
+async function actualizarContadoresInicio() {
+  const elResueltos   = document.getElementById('resueltos');
+  const elPendientes  = document.getElementById('pendientes');
+
+  // Si no estamos en index (no existen), no hacemos nada:
+  if (!elResueltos && !elPendientes) return;
+
+  try {
+    // 1) Traer todas las denuncias
+    const resp = await fetch('/api.php?action=listar');
+    const data = await resp.json();
+    if (!data || data.ok !== true) throw new Error(data?.error || 'Error listando');
+
+    // 2) Asegurar formato objeto
+    let d = data.denuncias || {};
+    if (Array.isArray(d)) d = Object.fromEntries(d.map((v, i) => [String(i), v || {}]));
+    if (typeof d !== 'object') d = {};
+
+    // 3) Contar por estado
+    let cntResueltas = 0;
+    let cntPendientes = 0;
+
+    Object.values(d).forEach((item) => {
+      const estado = (item?.estado || 'Pendiente').trim();
+      if (estado === 'Resuelta') cntResueltas++;
+      else if (estado === 'Pendiente') cntPendientes++;
+    });
+
+    // 4) Pintar en la vista (si existen)
+    if (elResueltos)  elResueltos.textContent  = String(cntResueltas);
+    if (elPendientes) elPendientes.textContent = String(cntPendientes);
+  } catch (err) {
+    console.error('No se pudieron actualizar los contadores:', err);
+    // opcional: deja los valores por defecto o pon 0
+    if (elResueltos)  elResueltos.textContent  = '0';
+    if (elPendientes) elPendientes.textContent = '0';
+  }
+}
+
+async function subirImagen(file) {
+  if (!file) return null;
+
+  const fd = new FormData();
+  fd.append('file', file);
+
+  // helper para leer mensaje del server
+  const readServerMessage = async (resp) => {
+    const text = await resp.text();
+    try {
+      const json = JSON.parse(text);
+      return json?.error || json?.message || text;
+    } catch { return text; }
+  };
+
+  try {
+    let resp = await fetch('/api.php?action=subir_imagen', { method: 'POST', body: fd });
+    if (!resp.ok) {
+      const detail = await readServerMessage(resp);
+      throw new Error(`HTTP ${resp.status} - ${detail}`);
+    }
+    let data = await resp.json();
+    if (data?.ok && data.url) return data.url;
+
+    // fallback a 9000
+    resp = await fetch('http://localhost:9000/api.php?action=subir_imagen', { method: 'POST', body: fd });
+    if (!resp.ok) {
+      const detail = await readServerMessage(resp);
+      throw new Error(`HTTP ${resp.status} - ${detail}`);
+    }
+    data = await resp.json();
+    if (data?.ok && data.url) return data.url;
+
+    throw new Error(data?.error || 'No se pudo subir la imagen');
+  } catch (err) {
+    console.error('Error subiendo imagen:', err);
+    alert('No se pudo subir la imagen: ' + err.message);
+    return null;
+  }
+}
+
+async function eliminarDenuncia(id){
+  const resp = await fetch('/api.php?action=eliminar', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ id })
+  });
+  const texto = await resp.text();
+  let data;
+  try { data = JSON.parse(texto); } catch { throw new Error('Respuesta no JSON: ' + texto); }
+  if (!data.ok) throw new Error(data.error || 'No se pudo eliminar');
+}

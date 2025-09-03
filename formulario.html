@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
     <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ReporTerra - Formulario</title>
-    <link rel="icon" type="image/png" href="./public/img/logo.png"> 
-    <!-- ---------------- Font ---------------- -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-  </head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ReporTerra - Formulario</title>
+        <link rel="icon" type="image/png" href="./public/img/logo.png"> 
+        
+        <!-- ---------------- Font ---------------- -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    </head>
   
     <body>
 <!-- ---------------- Header ---------------- -->
         <header class="navbar">
         <div class="header-logo">
-    <img src="./img/logo.png" width="35px" alt="Logo" id="logo-img" style="cursor:pointer;">
-    <div class="logo" id="logo-text" style="cursor:pointer;">ReporTerra</div>
+        <img src="./img/logo.png" width="35px" alt="Logo" id="logo-img" style="cursor:pointer;">
+        <div class="logo" id="logo-text" style="cursor:pointer;">ReporTerra</div>
         </div>
         <nav>
-            <a style="color:#636363; font-size: 20px; margin-right: 25px;">Contáctanos</a>
+            <a style="color:#636363; font-size: 20px; margin-right: 25px;" href="contactanos">Contáctanos</a>
         </nav>
         </header>
     
@@ -60,13 +61,18 @@
                     <textarea placeholder="Describe el incidente: qué observaste, cuándo ocurrió, impacto, involucrados..." rows="4"></textarea>
                 </section>
 
-                <section class="incidente-form-group">
+                <section class="incidente-form-group" id="grupo-evidencia">
                     <h2>Subir Evidencia (Opcional)</h2>
+                    <input type="file" id="evidencia" accept="image/png,image/jpeg" />
+                    <div style="margin-top:10px">
+                        <img id="preview-evidencia" alt="" style="max-width:100%; display:none; border-radius:8px;"/>
+                    </div>
                     <div class="incidente-upload-area">
                         <img src="https://img.icons8.com/ios/50/000000/upload-to-cloud--v1.png" alt="Upload Icon" class="upload-icon"/>
                         <p>Subir fotos PNG, JPG hasta 10MB</p>
                     </div>
                 </section>
+
 
                 <button type="submit" class="incidente-submit-button" id="btn-reportar">Reportar</button>
             </form>
@@ -106,15 +112,30 @@
                     <div class="sidebar-emergency-phone">1-800-ECO-HELP</div>
                 </div>
             </aside>
-                        <script type="module" src="/src/main.js"></script>
+                        
                         <div id="modal-exito" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.3);z-index:9999;align-items:center;justify-content:center;">
                             <div style="background:#fff;padding:30px 40px;border-radius:16px;box-shadow:0 2px 16px #0002;font-size:1.3em;color:#5B9430;display:flex;flex-direction:column;align-items:center;">
                                 <span style="font-size:2em;">✅</span>
                                 ¡Reporte enviado con éxito!
                             </div>
-                        </div>
-
-                        
+                        </div>        
         </main>
+
+
+        <!-- ---------------- Final ---------------- -->
+        <p style="margin-top: 90px;"> </p>
+
+        <footer>
+        <div class="footer-logo">
+            <img src="./img/logo_footer.png" alt="Logo" width="1000px">
+            <span>ReporTerra</span>
+        </div>
+
+        <nav>
+            <a href="contactanos">Contáctanos</a>
+        </nav>
+        </footer>
+
+        <script type="module" src="src/main.js"></script>
     </body>
 </html>

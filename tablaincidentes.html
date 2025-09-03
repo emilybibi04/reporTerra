@@ -26,7 +26,7 @@
     </header>
     <!-- ---------------- Inicio ---------------- -->
     <section class="reportados">
-      <h1 style="font-size: 100px;  margin-top: -20px; margin-bottom: 25px;">Incidentes Reportados</h1>
+      <h1 style="font-size: 100px;  margin-top: -15px; margin-bottom: 0px;">Incidentes Reportados</h1>
     </section>
 
     <!-- ---------------- Tipos de Incidentes ---------------- -->
@@ -36,9 +36,11 @@
                 <label for="filtro-tipo" style="font-size: 22px; color: #5B9430; font-weight: bold;">Filtrar por tipo:</label>
                 <select class= "filtro" id="filtro-tipo" name="filtro-tipo" style="font-size: 20px; margin-left: 10px;">
                     <option value="">Todos</option>
-                    <option value="incendio">Incendio</option>
-                    <option value="inundacion">Inundación</option>
-                    <option value="deslizamiento">Deslizamiento</option>
+                    <option value="Contaminación del Agua">Contaminación del Agua</option>
+                    <option value="Manejo de Residuos">Manejo de Residuos</option>
+                    <option value="Incendios Forestales">Incendios Forestales</option>
+                    <option value="Deforestación y Tala Ilegal">Deforestación y Tala Ilegal</option>
+                    <option value="Otro">Otro</option>
                 </select>
             </div>
             <div>
@@ -68,23 +70,17 @@
         <thead>
           <tr>
             <th>Estado</th>
-            <th>ID</th>
             <th>Tipo</th>
             <th>Fecha</th>
             <th>Ubicación</th>
-            <th>Descripción</th>
-            <th>Más</th>
+            <th>Ver más</th>
+            <th>Más Opciones</th>
+            <th>Eliminar</th> 
             </tr>
         </thead>
         <tbody id="incidentes-lista">
             <tr>
-                <td>Incendio en la playa</td>
-                <td>Incendio</td>
-                <td>2023-10-01</td>
-                <td>Manabí, Ecuador</td>
-                <td><button type="submit" class="btn-ver-mas">Ver más</button></td>
-                <td>Descripcion</td>
-                <td><button class="btn-ver-mas">Editar</button></td>
+
             </tr>
         </tbody>
       </table>

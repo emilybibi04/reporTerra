@@ -3,6 +3,7 @@ header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit; }
 
 ini_set('display_errors', 0);
@@ -40,6 +41,7 @@ function ok($data = []) {
   echo json_encode(['ok'=>true] + $data, JSON_UNESCAPED_UNICODE);
   exit;
 }
+
 function fail($msg, $code=400) {
   while (ob_get_level()) ob_end_clean();
   http_response_code($code);
@@ -68,7 +70,8 @@ switch ($action) {
       'tipo'      => $body['tipo'],
       'ubicacion' => $body['ubicacion'],
       'region'    => $body['region'],
-      'detalles'  => $body['detalles'] ?? ''
+      'detalles'  => $body['detalles'] ?? '',
+      'imagen'    => $body['imagen']   ?? ''
     ]);
 
     if ($id === false) fail('No se pudo registrar');
@@ -80,31 +83,31 @@ switch ($action) {
     ok(['denuncias'=>$todas]);
   }
 
-    case 'cambiar_estado': {
-      $raw  = file_get_contents('php://input');
-      $body = $raw ? json_decode($raw, true) : null;
+  case 'cambiar_estado': {
+    $raw  = file_get_contents('php://input');
+    $body = $raw ? json_decode($raw, true) : null;
 
-      $id = null;
-      $estado = null;
+    $id = null;
+    $estado = null;
 
-      if (is_array($body)) {
-        $id     = $body['id']     ?? $id;
-        $estado = $body['estado'] ?? $estado;
-      }
-      $id     = $_POST['id']     ?? $_GET['id']     ?? $id;
-      $estado = $_POST['estado'] ?? $_GET['estado'] ?? $estado;
-
-      $id     = isset($id) ? trim((string)$id) : null;
-      $estado = isset($estado) ? trim((string)$estado) : null;
-
-      if ($id === null || $id === '' || $estado === null || $estado === '') {
-        fail('id y estado son obligatorios');
-      }
-
-      $done = $firebase->cambiarEstado($id, $estado);
-      if (!$done) fail('No se pudo cambiar el estado');
-      ok();
+    if (is_array($body)) {
+      $id     = $body['id']     ?? $id;
+      $estado = $body['estado'] ?? $estado;
     }
+
+    $id     = $_POST['id']     ?? $_GET['id']     ?? $id;
+    $estado = $_POST['estado'] ?? $_GET['estado'] ?? $estado;
+    $id     = isset($id) ? trim((string)$id) : null;
+    $estado = isset($estado) ? trim((string)$estado) : null;
+
+    if ($id === null || $id === '' || $estado === null || $estado === '') {
+      fail('id y estado son obligatorios');
+    }
+
+    $done = $firebase->cambiarEstado($id, $estado);
+    if (!$done) fail('No se pudo cambiar el estado');
+    ok();
+  }
 
 
   case 'editar': {
@@ -138,6 +141,61 @@ switch ($action) {
     $done = $firebase->eliminarDenuncia($id);
     if (!$done) fail('No se pudo eliminar la denuncia');
     ok();
+  }
+
+  case 'subir_imagen': {
+    if (empty($_FILES['file']) || !is_array($_FILES['file'])) {
+      fail('No llegó el campo "file" en el formulario');
+    }
+
+    $f = $_FILES['file'];
+
+    if (!isset($f['error']) || $f['error'] !== UPLOAD_ERR_OK) {
+      $cod = $f['error'] ?? -1;
+      $map = [
+        UPLOAD_ERR_INI_SIZE => 'El archivo excede upload_max_filesize',
+        UPLOAD_ERR_FORM_SIZE => 'El archivo excede MAX_FILE_SIZE del form',
+        UPLOAD_ERR_PARTIAL => 'Archivo subido parcialmente',
+        UPLOAD_ERR_NO_FILE => 'No se subió archivo',
+        UPLOAD_ERR_NO_TMP_DIR => 'Falta carpeta temporal',
+        UPLOAD_ERR_CANT_WRITE => 'No se pudo escribir en disco',
+        UPLOAD_ERR_EXTENSION => 'Extensión detuvo la subida',
+      ];
+      $msg = $map[$cod] ?? ('Error al subir (código '.$cod.')');
+      fail($msg);
+    }
+
+    if (empty($f['tmp_name']) || !file_exists($f['tmp_name'])) {
+      fail('Archivo temporal no encontrado');
+    }
+
+    if (!empty($f['size']) && $f['size'] > 10 * 1024 * 1024) {
+      fail('Archivo supera 10MB');
+    }
+
+    $mime = null;
+    if (function_exists('mime_content_type')) {
+      $mime = @mime_content_type($f['tmp_name']) ?: null;
+    }
+    if (!$mime && class_exists('finfo')) {
+      $fi = new finfo(FILEINFO_MIME_TYPE);
+      $mime = @$fi->file($f['tmp_name']) ?: null;
+    }
+
+    $ext = strtolower(pathinfo($f['name'] ?? '', PATHINFO_EXTENSION));
+    $esImagen = in_array($mime, ['image/jpeg','image/png'])
+            || in_array($ext, ['jpg','jpeg','png']);
+    if (!$esImagen) {
+      fail('Solo se permiten imágenes JPG o PNG');
+    }
+
+    try {
+      $url = $firebase->subirEvidencia($f['tmp_name'], $f['name'] ?? 'archivo', $mime ?: null);
+      if (!$url) fail('No se pudo subir la imagen');
+      ok(['url' => $url]);
+    } catch (Throwable $e) {
+      fail('Error subiendo: '.$e->getMessage(), 500);
+    }
   }
 
   default:
